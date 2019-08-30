@@ -1,0 +1,279 @@
+<div class="ctbody-content">
+<?php
+if(!empty($message)){
+    $msg=explode("_",$message);
+    echo '<div class="alert alert-'.$msg[0].'">'.$msg[1].'! </div>';
+}
+?>
+    <?php if(!empty($edit_data)){ ?>
+    <div class="addcategory-total cf">
+        <p class="total-number"><span id="movie_total">0</span> Movies</p>
+        <p class="total-number"><span id="trailer_total">0</span> Trailers</p>
+        <p class="total-number"><span id="song_total">0</span> Songs</p>
+        <a target="_blank" href="<?php if(!empty($edit_data)){ echo $edit_data['final_url']; } ?>" class="view-website">View in Website</a>
+    </div>
+    <?php } ?>
+
+    <div class="user-profile cf">
+        <?php echo form_open_multipart((!empty($edit_data))? base_url( 'backend/music_director/update' ) : base_url( 'backend/music_director/save' ), array( 'method' => 'POST' ));?>
+        <?php if(!empty($edit_data)){ ?>
+            <input type="hidden" name="id" value="<?php echo $edit_data['id']; ?>">
+        <?php } ?>
+        <div class="image-name">
+            <img src="<?php echo (!empty($edit_data) && !empty($edit_data['music_img']))? base_url()."images/music/".$edit_data['music_img']: base_url().'images/no-user.svg'; ?>" alt=""  id="img">
+            <input type="file" name="user_file"  size="30" onchange="readURL(this);">
+
+        </div>
+        <div class="info-block">
+            <div class="input-wrap">
+                <label>Name</label>
+                <div class="cf"><input type="text" name="name" value="<?php if(!empty($edit_data)){ echo $edit_data['music_name']; } ?>" required="" class="input-field"></div>
+            </div>
+            <div class="input-wrap">
+                <label>Title</label>
+                <div class="cf"><input type="text" name="title" value="<?php if(!empty($edit_data)){ echo $edit_data['music_title']; } ?>" class="input-field"></div>
+            </div>
+            <div class="input-wrap">
+                <label>description</label>
+                <div class="cf"><textarea class="description" name="description" rows="10" cols="40"><?php if(!empty($edit_data)){ echo $edit_data['music_desc']; } ?></textarea></div>
+            </div>
+            <div class="input-wrap">
+                <label>keywords</label>
+                <div class="cf"><input type="text" name="keyword" value="<?php if(!empty($edit_data)){ echo $edit_data['music_keywords']; } ?>" class="input-field"></div>
+            </div>
+            
+            <?php if(!empty($edit_data)){ ?>
+                <input type="submit" name="submit" class="button" value="Update">
+                <a href="<?php echo base_url()."backend/music_director/status?id=".$edit_data['id']; ?>" class="button delete">delete</a>
+            <?php } ?>
+        </div>
+    </div>
+    <?php if(empty($edit_data)){ ?>
+        <input type="submit" name="submit" class="button-blue" value="publish">
+    <?php } ?>
+    <?php echo form_close();?>
+</div>
+<?php if(!empty($edit_data)){ ?>
+    <?php include_once("common/movie_detail_list_view.php"); ?>
+    <?php include_once("common/trailer_detail_list_view.php"); ?>
+    <?php include_once("common/video_detail_list_view.php"); ?>
+<?php } ?>
+<script type="application/javascript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img')
+                    .attr('src', e.target.result);
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+<script type="text/javascript">
+
+ /* Formatting function for row details - modify as you need */
+    function format ( d ) {
+        // `d` is the original data object for the row
+        return '<table cellpadding="5" cellspacing="0" border="0" style="margin:0;">'+
+            '<tr>'+
+            '<td>' +
+            '<ul  class="open-info clear">'+
+            
+
+            '<li class="cf">'+
+            '<label>Cast</label>'+
+            '<span class="dtr-data">'+d.cast+'</span>'+
+            '</li>'+
+
+            '<li class="cf">'+
+            '<label>Singer</label>'+
+            '<span class="dtr-data">'+d.singer+'</span>'+
+            '</li>'+
+
+            '<li class="cf">'+
+            '<label>Music</label>'+
+            '<span class="dtr-data"> '+d.music+'</span>'+
+            '</li>'+
+
+
+            '<li class="cf">'+
+            '<label>Director</label>'+
+            '<span class="dtr-data"> '+d.director+'</span>'+
+            '</li>'+
+
+            '<li class="cf">'+
+            '<label>&copy;</label>'+
+            '<span class="dtr-data"> '+d.rel_by+'</span>'+
+            '</li>'+
+
+            '<li class="cf">'+
+            '<label>Description </label>'+
+            '<span class="dtr-data"> '+d.description+'</span>'+
+            '</li>'+
+
+            '</ul>'+
+            '</tr>'+
+            '</table>';
+    }
+
+
+    $(document).ready(function() {
+
+        var csrf = '<?php echo $this->security->get_csrf_hash(); ?>';
+        var data = {};
+        data['<?php echo $this->security->get_csrf_token_name(); ?>'] = csrf;
+
+        $.ajaxSetup({ 'data': data });
+
+        var video_table = $('#video-example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                "url": "<?php echo base_url('backend/detail/video_list') ?>",
+                "dataType": "json",
+                "type": "POST",
+                "data":{
+
+                    music_director:"<?php echo $edit_data['id']; ?>"
+
+                },
+                "complete": function(response) {
+                    $("#song_total").html(response.responseJSON.recordsFiltered);
+                }
+            },
+            lengthMenu: [
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000],
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000]
+            ],
+            "columns": [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "defaultContent": ''
+                },
+                { "data": "created" },
+                { "data": "video_name" },
+                { "data": "movie_name" },
+                { "data": "play" },
+                { "data": "like" },
+                { "data": "category_name" },
+                { "data": "action" }
+            ],
+            "order": [[1, 'desc']]
+        } );
+
+
+
+        // Add event listener for opening and closing details
+        $('#video-example tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = video_table.row( tr );
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        } );
+
+
+        var trailer_table = $('#trailer-example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                "url": "<?php echo base_url('backend/detail/trailer_list') ?>",
+                "dataType": "json",
+                "type": "POST",
+                "data":{
+
+                    music_director:"<?php echo $edit_data['id']; ?>"
+
+                },
+                "complete": function(response) {
+                    $("#trailer_total").html(response.responseJSON.recordsFiltered);
+                }
+            },
+            lengthMenu: [
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000],
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000]
+            ],
+            "columns": [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "defaultContent": ''
+                },
+                { "data": "created" },
+                { "data": "video_name" },
+                { "data": "movie_name" },
+                { "data": "play" },
+                { "data": "like" },
+                { "data": "category_name" },
+                { "data": "action" }
+            ],
+            "order": [[1, 'desc']]
+        } );
+
+
+
+        // Add event listener for opening and closing details
+        $('#trailer-example tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = trailer_table.row( tr );
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        } );
+
+
+        var movie_table = $('#movie-example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                "url": "<?php echo base_url('backend/detail/movie_list') ?>",
+                "dataType": "json",
+                "type": "POST",
+                "data":{
+
+                    music_director:"<?php echo $edit_data['id']; ?>"
+
+                },
+                "complete": function(response) {
+                    $("#movie_total").html(response.responseJSON.recordsFiltered);
+                }
+            },
+            lengthMenu: [
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000],
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000]
+            ],
+            "columns": [
+
+                { "data": "number" },
+                { "data": "release_date" },
+                { "data": "date" },
+                { "data": "img" },
+                { "data": "movie_name" },
+                { "data": "category_name" },
+                { "data": "action" }
+            ],
+            "order": [[1, 'desc']]
+        } );
+
+    } );
+</script>

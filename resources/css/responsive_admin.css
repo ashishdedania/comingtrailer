@@ -1,0 +1,42 @@
+
+@media (min-width:1400px) and (max-width:8000px) {
+
+}
+@media (max-width:767px) {
+	body{width: auto; min-width: inherit;}
+	#header{padding:10px 0; position: relative; width: auto; max-width:100%;}
+	#header .logo{margin-left:2%; width:18%; }
+    #header .profile img{width:20px; height:20px; margin-top:10px;}
+	#header .right-side{padding:0; width:80%; }
+	#header .log-out{font-size:11px; margin: 10px 10px 0 10px;}
+	#header .profile{margin-left:8px;}
+	#header .icon-add, #header .home-seo{font-size: 10px; margin:6px 0 0 2px; padding: 5px 5px;}
+	.icon-add::before{margin-right: 4px !important; font-size:15px !important;}
+	.adminmenuback{display: none;}
+	.adminmenu{ height:27px; position: relative; top: auto; overflow: auto; white-space: nowrap; width: 100%;}
+	.adminmenu ul{padding:0;}
+	.adminmenu ul li{display:inline-block;}
+	.adminmenu ul li a{padding:5px; font-size:11px;}
+    .icon-video-song::before, .icon-trailer::before, .icon-movie-poster::before, .icon-movie::before, .icon-movie::before, .icon-actors::before, .icon-singers::before, .icon-director::before, .icon-music-director::before, .icon-channel::before, .icon-all-user-info::before, .icon-adsense::before, .icon-about-us::before, .icon-contact-us::before, .icon-advertise::before, .icon-faq::before, .icon-terms-privacy::before, .icon-partnership::before{font-size:15px; margin-right:10px;}
+	#ctwpcontent{margin:0; padding: 0;}
+	#ctwpcontent .language-nav-tabs{ height:32px; overflow: auto; white-space: nowrap; width: 100%;}
+    #ctwpcontent .language-nav-tabs li{margin:0;}
+	#ctwpcontent .language-nav-tabs li a{padding:6px; font-size:11px;}
+	.ctbody-content{padding:10px 0;}
+	.ctbody-content .addcategory-total .button{font-size: 10px; margin:6px 0 0 10px; padding: 5px 8px;}
+	.ctbody-content .addcategory-total{padding-bottom:10px;}
+    
+    .ctbody-content .search-bar{ padding:10px 1.5%;}
+    .ctbody-content .search-bar .select, .ctbody-content .search-bar .input-search, .ctbody-content .search-bar .button-search{width:48%; margin:3px 1%; box-sizing: border-box;}
+    .ctbody-content .search-bar .input-search{ height:45px;}
+    
+    .ctbody-content .all-lists ul li{width:50%;}
+    
+    .ctbody-content .user-profile .image-name{width:20%; float: none; margin:0 0 15px 0;}
+    .ctbody-content .user-profile .info-block{width:100%; float: none; padding: 0;}
+    
+    .ctbody-content .date-category .date-wrap{width: auto;}
+    
+    .ctbody-content .videoposter-info .input-wrap .button-get-info{width:25%; margin-top:10px;}
+    
+}

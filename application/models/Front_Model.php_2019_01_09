@@ -1,0 +1,617 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of Front_Model
+ *
+ * @author yoo
+ */
+class Front_Model extends CI_Model{
+    //put your code here
+    
+    public function __construct() {
+       // parent::__construct();
+        $this->load->database();
+        $this->load->helper('url');
+        $this->load->model('WebService');
+    }
+    
+    public function getVideoByMovie($cat_id,$movie_id,$video_id){
+        
+            $this->db->select('d.`id`,d.`video_name`');
+            $this->db->from('video AS d');// I use aliasing make joins easier
+            $this->db->join('video_map_movie AS e', 'd.id = e.video_id', 'INNER');
+            $this->db->where(array('e.video_id != '.$video_id.' and e.movie_id = '=>''.$movie_id));
+            $this->db->order_by("d.rel_date", "desc");
+            $movie_result = $this->db->get();
+           // $movies = array();
+           // unset($movies);
+                      //$movies = array();
+//            print_r($movie_result->result_array());exit;
+            $num = $movie_result->num_rows();
+            if($num>0){
+                foreach ($movie_result->result_array() as $movie) {
+                       $video_json = $this->WebService->getIndividualTrailer($cat_id,0,'','',$movie['id']);
+                       $datas = json_decode($video_json);
+//                            echo print_r($datas->data);
+                            if(!empty($datas->data[0]->video_name)){
+                      $video[] = $video_json;
+                            }
+                }
+            }else{
+                $video[] = '';
+            }
+            $finalarray = @$video;
+            empty($movies);
+            
+//            print_r($finalarray);
+            
+            return $finalarray;
+        
+        
+    }
+    
+    
+    public function getPosterByMovie($cat_id,$movie_id){
+        
+            $this->db->select('d.`id`,d.`poster_name`');
+            $this->db->from('poster AS d');// I use aliasing make joins easier
+            $this->db->join('poster_map_movie AS e', 'd.id = e.poster_id', 'INNER');
+            $this->db->where(array('e.movie_id = '=>''.$movie_id));
+            $this->db->where(array('d.is_deleted = '=>'0'));
+            $this->db->order_by("d.rel_date", "desc");
+            $movie_result = $this->db->get();
+            $num = $movie_result->num_rows();
+//            echo $movie_result->num_rows().'....'.$movie_id;exit;
+            //echo $num;exit;
+            if($num>0){
+                foreach ($movie_result->result_array() as $movie) {
+                      $video_json = $this->WebService->getIndividualPoster(0,'','',$movie['id']);
+                      $video[] = $video_json;
+                }
+            }else{
+                $video[] = '';
+            }
+            $finalarray = $video;
+            empty($movies);
+            
+            return $finalarray;
+        
+        
+    }
+    
+    public function getMovieByActor($actor_id){
+        
+        $this->db->select('d.`id`,d.`movie_name`');
+        $this->db->from('movie AS d');// I use aliasing make joins easier
+        $this->db->join('movie_map_cast AS e', 'd.id = e.movie_id', 'INNER');
+        $this->db->where(array('e.cast_id = '=>''.$actor_id));
+        $this->db->order_by("d.rel_date", "desc");
+        $movie_result = $this->db->get();
+            
+            
+            $num = $movie_result->num_rows();
+            if($num>0){
+                foreach ($movie_result->result_array() as $movie) {
+                      $movies[] = array('cast_id'=>''.$movie['id'],'cast_name'=>''.$movie['cast_name']);
+                }
+            }else{
+                $movies[] = array('cast_id'=>'','cast_name'=>'');
+            }
+            $finalarray = $movies;
+            empty($movies);
+
+            return $finalarray;
+        
+        
+    }
+    
+    
+    public function getUserLiked($user_id = 0,$cat_id = 0,$video_id = 0,$user_activity = ''){
+        
+        $this->db->select('*');
+        $this->db->from('user_activity AS d');// I use aliasing make joins easier
+        if($user_id>0){
+            $this->db->where(array('d.user_id = '=>''.$user_id));
+        }
+        if($cat_id>0){
+            $this->db->where(array('d.cat_id = '=>''.$cat_id));
+        }
+        if($user_activity != ''){
+            $this->db->where(array('d.user_activity = '=>''.$user_activity));
+        }
+        if($video_id>0){
+            $this->db->where(array('d.comman_id = '=>''.$actor_id));
+        }
+        
+        if($this->input->post('search_year')){
+            $this->db->where("DATE_FORMAT(`d`.`created`,'%Y')",$this->input->post('search_year'));
+        }
+        if($this->input->post('search_month')){
+            $this->db->where("DATE_FORMAT(`d`.`created`,'%c')",$this->input->post('search_month'));
+        }
+        $_POST['from_search'] = 'yes';
+        $_POST['ajax'] = 'yes';
+        
+        $this->db->order_by("d.id", "desc");
+        $user_result = $this->db->get();
+       
+        $num = $user_result->num_rows();
+        if($num>0){
+            //echo $num;exit;
+             foreach ($user_result->result_array() as $user) {
+                      $cat_id = $user['cat_id'];
+                      $comman_id = $user['common_id'];
+                      $timestamp = strtotime(''.$user['created']);
+                      $new_date_format = date('d M, Y H:i A', $timestamp);
+                      if($cat_id == 3){
+                          $data_json = $this->WebService->getIndividualPoster(0,'','',$comman_id);
+                          //$all_data[] = $data_json;
+                          $all_data[] = array('mydata'=>$data_json,'date'=>$new_date_format,'shared_with'=>$user['shared_with'],'user_data'=>$user);
+                      }else if(($cat_id == 1) || ($cat_id == 2)){
+                          $data_json = $this->WebService->getIndividualTrailer($cat_id,0,'','',$comman_id);
+                          $all_data[] = array('mydata'=>$data_json,'date'=>$new_date_format,'shared_with'=>$user['shared_with'],'user_data'=>$user);
+                      }else{
+                          $all_data[] = '';
+                      }
+                      
+                } 
+                
+            
+                
+        }else{
+            $all_data[] = '';
+        }
+        
+        $finalarray = $all_data;
+            empty($all_data);
+            
+           // print_r($finalarray);exit;
+            
+            return $finalarray;
+       
+        
+        
+    }
+    
+    public function getSharedFriends($user_id = 0,$user_invite_code = ''){
+        
+        $this->db->select('*');
+        $this->db->from('user AS d');// I use aliasing make joins easier
+        
+        $this->db->where(array('d.shared_code = '=>''.$user_invite_code));
+        
+        if($this->input->post('search_year')){
+            //echo $this->input->post('search_year');exit;
+            if($this->input->post('search_month')){
+                $this->db->where("DATE_FORMAT(`d`.`created`,'%c')",$this->input->post('search_month'));
+            }
+            $this->db->where("DATE_FORMAT(`d`.`created`,'%Y')",$this->input->post('search_year'));
+        }
+        
+        if($this->input->post('search_keyword')){
+            
+            //if($this->input->post('ajax')){
+                if($this->input->post('search_keyword') == '0-9'){
+                    //echo $this->input->post('search_keyword');exit;
+                    $this->db->where(array('`d`.`name` RLIKE '=>'^[0-9].*'));
+                }else{
+                    $this->db->like('LOWER(`d`.`name`)',strtolower($this->input->post('search_keyword')), 'after');
+                }
+//            }else{
+//                $this->db->like('`d`.`name`',$this->input->post('search_keyword'));
+//            }
+      
+        }
+        
+        $user_result = $this->db->get();
+                   // echo $user_result->num_rows();exit;
+
+        if($user_result->num_rows()>0){
+            foreach ($user_result->result_array() as $value) {
+                
+                
+                $this->db->select('*');
+                $this->db->from('user_activity AS e');
+                $this->db->where('e.user_id = ',''.$value['id']);
+                $this->db->where('e.user_activity = ','invite_friend');
+                $this->db->order_by("e.id", "desc");
+                $data_result = $this->db->get();
+                if($data_result->num_rows()>0){
+                    foreach ($data_result->result_array() as $value1) {
+//                        echo $value1['created'];exit;
+                        $timestamp = strtotime(''.$value1['created']);
+                        $new_date_format = date('d M, Y H:i A', $timestamp);
+                        $invite_data[] = array('user_name'=>$value['name'],'date'=>$new_date_format); 
+                    }
+                }
+            }
+        }else{
+                $invite_data[] = ''; 
+
+        }
+        
+        return $invite_data;
+    }
+    
+    public function getUserSharedFriends($user_id){
+        $this->db->select('d.`name`,e.`shared_points`,e.`created`,d.`mobile`');
+        $this->db->from('user AS d');// I use aliasing make joins easier
+        $this->db->join('user_frnd_share AS e', 'd.id = e.shared_to_id', 'INNER');
+        $this->db->where(array('e.shared_by_id = '=>''.$user_id));
+        $this->db->order_by("e.id", "desc");
+        if($this->input->post('search_year')){
+            if($this->input->post('search_month')){
+                $this->db->where("DATE_FORMAT(`d`.`created`,'%c')",$this->input->post('search_month'));
+            }
+            $this->db->where("DATE_FORMAT(`d`.`created`,'%Y')",$this->input->post('search_year'));
+        }
+        
+        if($this->input->post('search_keyword')){
+            
+            //if($this->input->post('ajax')){
+                if($this->input->post('search_keyword') == '0-9'){
+                    //echo $this->input->post('search_keyword');exit;
+                    $this->db->where(array('`d`.`name` RLIKE '=>'^[0-9].*'));
+                }else{
+                    $this->db->like('LOWER(`d`.`name`)',strtolower($this->input->post('search_keyword')), 'after');
+                }
+//            }else{
+//                $this->db->like('`d`.`name`',$this->input->post('search_keyword'));
+//            }
+      
+        }
+        
+        
+        
+        $movie_result = $this->db->get();
+            
+            
+            $num = $movie_result->num_rows();
+            if($num>0){
+                foreach ($movie_result->result_array() as $movie) {
+                    $timestamp = strtotime(''.$movie['created']);
+                    $new_date_format = date('d M, Y H:i A', $timestamp);
+                    $movies[] = array('name'=>''.$movie['name'],'shared_points'=>''.$movie['shared_points'],'date'=>$new_date_format,'mobile'=>$movie['mobile']);
+                }
+            }else{
+                $movies[] = '';
+            }
+            $finalarray = $movies;
+            empty($movies);
+
+            return $finalarray;
+    }
+    
+    function getTotalSearchData($global_search_keyword,$type){
+        //video detials
+            $this->db->like("LOWER(`video_name`)",strtolower($global_search_keyword));
+//            if(!$this->input->post('api')){
+//                if($page != '') $this->db->limit($limit,($page-1)*$limit);
+//            }else{
+//                $this->db->limit($limit,$page);
+//            }
+            $this->db->where('is_deleted','0');
+            if(!$this->input->post('api')){
+                $this->db->where('cat_id',''.$type);
+            }else{
+//                $this->db->where('cat_id','1');
+//                $this->db->or_where('cat_id','2');
+            }
+            $search_result['video'] = $this->db->get('video')->result_array();
+            $total_search_result = count($search_result['video']);
+            
+//            $search_result['total_search_result'] = $total_search_result;
+            
+        return $total_search_result;
+    }
+            
+    function searchTrailer($page = '', $limit = '',$type){
+        
+        $search_result = array();
+       // echo $this->input->post('global_search_keyword');exit;
+//        if(!$this->input->post('api')){
+            if(trim($this->input->post('global_search_keyword'))){
+                $this->session->unset_userdata('total_search_result');
+                $global_search_keyword = trim($this->input->post('global_search_keyword'));
+                $this->session->set_userdata('global_search_keyword',$global_search_keyword);
+            }
+//        }
+        if($this->session->userdata('global_search_keyword')){
+            $global_search_keyword = $this->session->userdata('global_search_keyword');
+        }
+        //video detials
+        
+        $total = $this->getTotalSearchData($global_search_keyword,$type);
+        
+            $this->db->like("LOWER(`video_name`)",strtolower($global_search_keyword));
+            if(!$this->input->post('api')){
+                if($page != '') $this->db->limit($limit,($page-1)*$limit);
+            }else{
+                $this->db->limit($limit,$page);
+            }
+            $this->db->where('is_deleted','0');
+            if(!$this->input->post('api')){
+                $this->db->where('cat_id',''.$type);
+            }else{
+//                $this->db->where('cat_id','1');
+//                $this->db->or_where('cat_id','2');
+            }
+            $search_result['video'] = $this->db->get('video')->result_array();
+            $total_search_result = count($search_result['video']);
+            
+            $search_result['total_current_search_result'] = $total_search_result;
+            
+            $search_result['total_search_result'] = $total;
+            //echo $total_search_result;exit;
+          //  print_r($search_result);exit;
+        return json_encode($search_result);
+    }
+    
+    function getTotalPosterSearchData($global_search_keyword){
+        $this->db->select('P.*,pi.poster_image');
+            $this->db->from('poster P');
+            $this->db->join('poster_img AS pi', 'P.id = pi.poster_id', 'INNER');
+            $this->db->like('LOWER(`poster_name`)',strtolower($global_search_keyword));
+            
+            $this->db->where('is_deleted','0');
+            $this->db->where('display_order','1');
+            $search_result['poster'] = $this->db->get()->result_array();
+            
+            $total_search_result = count($search_result['poster']);
+            
+            return $total_search_result;
+    }
+    
+    function searchPoster($page = '', $limit = ''){
+        
+        $search_result = array();
+//        echo $this->input->post('global_search_keyword');exit;
+        if(trim($this->input->post('global_search_keyword'))){
+            $this->session->unset_userdata('total_search_result');
+            $global_search_keyword = trim($this->input->post('global_search_keyword'));
+            $this->session->set_userdata('global_search_keyword',$global_search_keyword);
+        }
+        if($this->session->userdata('global_search_keyword')){
+            $global_search_keyword = $this->session->userdata('global_search_keyword');
+        }
+        $total = $this->getTotalPosterSearchData($global_search_keyword);
+        //poster details
+            $this->db->select('P.id as pid,P.*,pi.poster_image',FALSE);
+            $this->db->from('poster P');
+            $this->db->join('poster_img AS pi', 'P.id = pi.poster_id', 'INNER');
+            $this->db->like('LOWER(`poster_name`)',strtolower($global_search_keyword));
+            if($page != '') $this->db->limit($limit,($page-1)*$limit);
+            $this->db->where('is_deleted','0');
+            $this->db->where('display_order','1');
+            $this->db->order_by('pi.poster_type','asc');            
+            $this->db->get()->result_array();            
+            $search_result['poster'] = $this->db->query("select x.* from (".$this->db->last_query().") as x group by x.pid")->result_array();
+            $total_search_result = count($search_result['poster']);
+            
+            $search_result['total_current_search_result'] = $total_search_result;
+            
+            $search_result['total_search_result'] = $total;
+            //echo $total_search_result;exit;
+//            print_r($search_result);exit;
+        return json_encode($search_result);
+    }
+    
+    public function getIndividalDataCount($global_search_keyword){
+        if($this->input->post('selected') == 'released_by'){
+            $individual = array($this->input->post('selected')=>'rel_by');
+            
+        }else{
+            $individual = array($this->input->post('selected')=>$this->input->post('selected'));
+        }
+        $total_search_result = 0;
+        foreach($individual as $table => $col_name){
+                $this->db->like("LOWER(`".$col_name."_name`)",strtolower($global_search_keyword));
+               
+                $this->db->where("status",0);
+                $result = $this->db->get($table)->result_array();
+                $total_search_result += count($result);
+        }
+        return $total_search_result;
+    }
+            
+    function searchIndividual($page = '', $limit = ''){
+        
+        $search_result = array();
+//        echo $this->input->post('global_search_keyword');exit;
+        if(trim($this->input->post('global_search_keyword'))){
+            $this->session->unset_userdata('total_search_result');
+            $global_search_keyword = trim($this->input->post('global_search_keyword'));
+            $this->session->set_userdata('global_search_keyword',$global_search_keyword);
+        }
+        if($this->session->userdata('global_search_keyword')){
+            $global_search_keyword = $this->session->userdata('global_search_keyword');
+        }
+        if($this->input->post('selected') == 'released_by'){
+            $individual = array($this->input->post('selected')=>'rel_by');
+            
+        }else{
+            $individual = array($this->input->post('selected')=>$this->input->post('selected'));
+        }
+        $individual_elements = ['m'=>'movie','s'=>'video','t'=>'video','p'=>'poster'];
+        $total_search_result = 0;
+        if(isset($global_search_keyword)){
+            $total = $this->getIndividalDataCount($global_search_keyword);
+            foreach($individual as $table => $col_name){
+                $this->db->like("LOWER(`".$col_name."_name`)",strtolower($global_search_keyword));
+                if($page != '') $this->db->limit($limit,($page-1)*$limit); //-->pagination
+                $this->db->where("status",0);
+                $result = $this->db->get($table)->result_array();
+                if(count($result) > 0){
+                    $total_search_result += count($result);
+                    foreach($result as $k => $person){
+                        $search_result[$table][$k]['detail'] = $person; 
+                        foreach($individual_elements as $key => $ie_table){
+                            if(($key != 'p' || ($table != 'music' && $table != 'singer')) && ($table != 'released_by' || $ie_table == 'video')){
+                                $this->db->select('*');
+                                $this->db->from($table.' AS t');// I use aliasing make joins easier
+                                if($table != 'released_by'){
+                                $this->db->join($ie_table.'_map_'.$table.' AS map', 't.id = map.'.$table.'_id', 'INNER');
+                                }else{
+                                    $this->db->join($ie_table.'_map_relby AS map', 't.id = map.'.$col_name.'_id', 'INNER');
+                                }
+                                $this->db->join($ie_table.' AS mapped', 'mapped.id = map.'.$ie_table.'_id', 'INNER');
+                                $this->db->where(array('map.'.$col_name.'_id'=>$person['id']));
+                                $this->db->where("t.status",0);
+                                if($key != 'm'){
+                                    $this->db->where("mapped.is_deleted",0);
+                                }
+                                if($key == 't'){ //--> Get Video Trailer
+                                    $this->db->where('mapped.cat_id',1);
+                                }elseif($key == 's'){ //--> Get video Songs
+                                    $this->db->where('mapped.cat_id',2);
+                                }
+                                $search_result[$table][$k][$key] = $this->db->get()->num_rows();
+                            }
+                        }
+                    }
+                }
+            }
+            
+            $search_result['total_current_search_result'] = $total_search_result;
+            $search_result['total_search_result'] = $total;
+            //echo $total_search_result;exit;
+//            print_r($search_result);exit;
+        return json_encode($search_result);
+    }
+    }
+    
+    function companyDataCount($global_search_keyword){
+        $individual = array('released_by');
+        $total_search_result = 0;
+         foreach($individual as $table){
+            $this->db->like("LOWER(`rel_by_name`)",strtolower($global_search_keyword));
+           
+            $result = $this->db->get($table)->result_array();
+            $total_search_result = count($result);
+         }
+         
+         return $total_search_result;
+    }
+            
+    function searchCompany($page = '', $limit = ''){
+        
+        $search_result = array();
+//        echo $this->input->post('global_search_keyword');exit;
+        if(trim($this->input->post('global_search_keyword'))){
+            $this->session->unset_userdata('total_search_result');
+            $global_search_keyword = trim($this->input->post('global_search_keyword'));
+            $this->session->set_userdata('global_search_keyword',$global_search_keyword);
+        }
+        if($this->session->userdata('global_search_keyword')){
+            $global_search_keyword = $this->session->userdata('global_search_keyword');
+        }
+        $individual = array('released_by');
+        $individual_elements = ['s'=>'video','t'=>'video'];
+        $total_search_result = 0;
+        if(isset($global_search_keyword)){
+            $total = $this->companyDataCount($global_search_keyword);
+            foreach($individual as $table){
+                $this->db->like("LOWER(`rel_by_name`)",strtolower($global_search_keyword));
+                if($page != '') $this->db->limit($limit,($page-1)*$limit);
+                $result = $this->db->get($table)->result_array();
+                if(count($result) > 0){
+                    $total_search_result = count($result);
+                    foreach($result as $k => $person){
+                        $search_result[$table][$k]['detail'] = $person; 
+                        foreach($individual_elements as $key => $ie_table){
+                            if($key != 'p' || ($table != 'music' && $table != 'singer')){
+                                $this->db->select('*');
+                                $this->db->from($table.' AS t');// I use aliasing make joins easier
+                                $this->db->join($ie_table.'_map_relby AS map', 't.id = map.rel_by_id', 'INNER');
+                                $this->db->join($ie_table.' AS mapped', 'mapped.id = map.'.$ie_table.'_id', 'INNER');
+                                $this->db->where(array('map.rel_by_id'=>$person['id']));
+
+                                if($key == 't'){ //--> Get Video Trailer
+                                    $this->db->where('mapped.cat_id',1);
+                                }elseif($key == 's'){ //--> Get video Songs
+                                    $this->db->where('mapped.cat_id',2);
+                                }
+                                $search_result[$table][$k][$key] = $this->db->get()->num_rows();
+                            }
+                        }
+                    }
+                }
+            }
+            
+            $search_result['total_current_search_result'] = $total_search_result;
+            $search_result['total_search_result'] = $total;
+//            echo 'test....'.$total_search_result;exit;
+//            print_r($search_result);exit;
+        return json_encode($search_result);
+    }
+    }
+    
+    function serchMovieCount($global_search_keyword){
+        $this->db->like('LOWER(`movie_name`)',strtolower($global_search_keyword));
+           
+        $searched_movie = $this->db->get('movie')->result_array();
+
+        $total_search_result = count($searched_movie);
+
+        return $total_search_result;
+    }
+            
+    function searchMovie($page = '', $limit = ''){
+        
+        $search_result = array();
+//        echo $this->input->post('global_search_keyword');exit;
+        if(trim($this->input->post('global_search_keyword'))){
+            $this->session->unset_userdata('total_search_result');
+            $global_search_keyword = trim($this->input->post('global_search_keyword'));
+            $this->session->set_userdata('global_search_keyword',$global_search_keyword);
+        }
+        if($this->session->userdata('global_search_keyword')){
+            $global_search_keyword = $this->session->userdata('global_search_keyword');
+        }
+        //movie list
+        $total = $this->serchMovieCount($global_search_keyword);
+            $this->db->like('LOWER(`movie_name`)',strtolower($global_search_keyword));
+            if($page != '') $this->db->limit($limit,($page-1)*$limit);
+            $searched_movie = $this->db->get('movie')->result_array();
+            $stp = array('s'=>'video','t'=>'video','p'=>'poster');
+            $total_search_result = 0;
+            if(count($searched_movie) > 0){
+                $total_search_result = count($searched_movie);
+                foreach($searched_movie as $key => $movie){
+                    $search_result['movie'][$key]['detail'] = $movie; 
+                    foreach($stp as $k => $ie_table){
+                        $this->db->select('*');
+                        $this->db->from('movie AS t');// I use aliasing make joins easier
+                        $this->db->join($ie_table.'_map_movie AS map', 't.id = map.movie_id', 'INNER');
+                        $this->db->join($ie_table.' AS mapped', 'mapped.id = map.'.$ie_table.'_id', 'INNER');
+                        $this->db->where(array('map.movie_id'=>$movie['id']));
+
+                        if($k == 't'){ //--> Get Video Trailer
+                            $this->db->where('mapped.cat_id',1);
+                        }elseif($k == 's'){ //--> Get video Songs
+                            $this->db->where('mapped.cat_id',2);
+                        }
+                        //$this->db->like('t.'.$table.'_name',$global_search_keyword);
+                        //$search_result[$table][$k][$key] = $this->db->get()->result_array();
+                        $search_result['movie'][$key][$k] = $this->db->get()->num_rows();
+                    }
+                }
+            }
+            
+            $search_result['total_current_search_result'] = $total_search_result;
+            $search_result['total_search_result'] = $total;
+            //echo $total_search_result;exit;
+//            print_r($search_result);exit;
+        return json_encode($search_result);
+    }
+        
+}
+    
+    
+

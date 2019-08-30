@@ -1,0 +1,53 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2018-12-03 12:59:32 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND `user_activity` = 'liked' AND `shared_with` = ''' at line 3 - Invalid query: SELECT *
+FROM `user_activity`
+WHERE `user_id` = '' AND `cat_id` = '' AND `common_id` =  AND `user_activity` = 'liked' AND `shared_with` = ''
+ERROR - 2018-12-03 12:59:52 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: UPDATE user_points SET total_likes = GREATEST(total_likes-0, 0) where user_id=
+ERROR - 2018-12-03 13:00:30 --> Unable to connect to the database
+ERROR - 2018-12-03 13:00:30 --> Unable to connect to the database
+ERROR - 2018-12-03 14:32:32 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'AND `user_activity` = 'liked' AND `shared_with` = ''' at line 3 - Invalid query: SELECT *
+FROM `user_activity`
+WHERE `user_id` = '' AND `cat_id` = '' AND `common_id` =  AND `user_activity` = 'liked' AND `shared_with` = ''
+ERROR - 2018-12-03 14:32:34 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: UPDATE user_points SET total_likes = GREATEST(total_likes-0, 0) where user_id=
+ERROR - 2018-12-03 18:17:21 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('1a3be1159afb075da3a69b3934dcbfa43df7886b', '66.249.79.167', 1543841195, '__ci_last_regenerate|i:1543841195;')
+ERROR - 2018-12-03 18:17:21 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('c59010e4a9e65c75dc1dd299b6ba3f40') AS ci_session_lock
+ERROR - 2018-12-03 18:23:41 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('6569b200112fd889f31a5b752b564d3a1c85a9b7', '66.249.79.167', 1543841577, '__ci_last_regenerate|i:1543841575;')
+ERROR - 2018-12-03 18:23:41 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('c86b591d79ec6552a3b3588001efa6c3') AS ci_session_lock
+ERROR - 2018-12-03 18:24:26 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('297cf5ddc9b06c3fe4f079b56d0df505243a840a', '137.97.106.154', 1543841621, '__ci_last_regenerate|i:1543841621;')
+ERROR - 2018-12-03 18:24:26 --> Query error: Lost connection to MySQL server during query - Invalid query: UPDATE `ci_sessions` SET `timestamp` = 1543841621
+WHERE `id` = '2c445189169cd6f39cf9ee2bf96358facf19beae'
+ERROR - 2018-12-03 18:24:26 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('60f8038e2ae693532139037d810eff0f00585ac8', '66.249.79.167', 1543841623, '__ci_last_regenerate|i:1543841621;')
+ERROR - 2018-12-03 18:24:26 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('e802527a9b90a756ce0dfe38388c25a2') AS ci_session_lock
+ERROR - 2018-12-03 18:24:26 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('71605e39baa66a9997b3d3371f370d61') AS ci_session_lock
+ERROR - 2018-12-03 18:24:26 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('cfad2c7a36500e7ab443b3c6d34d01d6') AS ci_session_lock
+ERROR - 2018-12-03 18:24:26 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('36ded0b3a2ee568ce5604df7114078247563ead6', '42.111.224.108', 1543841621, '__ci_last_regenerate|i:1543841621;')
+ERROR - 2018-12-03 18:24:26 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('dd1958d0c9905ab84ce3eff754dde221') AS ci_session_lock
+ERROR - 2018-12-03 18:24:26 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('6df9f3c230bddcad1c2712f8215ab0f036d9b296', '91.73.27.37', 1543841621, '__ci_last_regenerate|i:1543841621;')
+ERROR - 2018-12-03 18:24:26 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('ea5173bbc0ac3dfad99c92de282a3a46') AS ci_session_lock
+ERROR - 2018-12-03 18:24:31 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('4929ee7eb0033e1e74d585f41f8a645d748e573c', '47.11.204.188', 1543841627, '__ci_last_regenerate|i:1543841621;')
+ERROR - 2018-12-03 18:24:32 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('cd1ab10f54e51de35d243f16de0df31c') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('2e6a00a9ed9239f0215ddf50d8db5feac53f158f', '66.249.79.167', 1543841667, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('4f0a774d04dce29889b01009fddacf1fc7f5b201', '122.173.100.120', 1543841666, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('1088eef792ca7a6fa80a6253ec59a9ca') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('118e469eda16f0028c8503db4a12e2b8') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('090c85ac5be7d1dfcaa8c7d8ac1e5d2301f70c06', '157.49.159.99', 1543841666, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('f318fbd81553c83eff4432c54640977a') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('dc9077921fad266899fca8f2bb377f7c5a45d30e', '43.225.54.56', 1543841666, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('784d0460a576c853aee721b1eed0e06f') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('725044fc9089be9ca6ee70cd1844947a0cde53b2', '157.49.159.99', 1543841666, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('a2e5560a23ea17df91c35d2f87e2e7d4') AS ci_session_lock
+ERROR - 2018-12-03 18:25:12 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('ebe8c63b46973cd7545830e7cf81da0b77d5aa9a', '5.31.185.140', 1543841666, '__ci_last_regenerate|i:1543841666;')
+ERROR - 2018-12-03 18:25:12 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('92092317925260537b8eaefa1f93fe53') AS ci_session_lock
+ERROR - 2018-12-03 18:25:17 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('f41f4352d72132c5c39036a1f51cee47bc16c124', '157.49.205.225', 1543841671, '__ci_last_regenerate|i:1543841671;')
+ERROR - 2018-12-03 18:25:17 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('18d742292782f67e4511e89d7a81097cc684b072', '157.49.223.91', 1543841674, '__ci_last_regenerate|i:1543841674;')
+ERROR - 2018-12-03 18:25:17 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('322dfe15e4da5ce85a220ec755a890c2') AS ci_session_lock
+ERROR - 2018-12-03 18:25:17 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('ec799b2376dee62c12e2f5733870516b') AS ci_session_lock
+ERROR - 2018-12-03 18:25:52 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('ae09496f9b865351a9ebe9cda641332cc36d1d3b', '157.49.223.91', 1543841707, '__ci_last_regenerate|i:1543841706;')
+ERROR - 2018-12-03 18:25:52 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('6c0c38ba4edd1ce31b46c2772a3b97b5') AS ci_session_lock
+ERROR - 2018-12-03 18:25:57 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('8e30fc218363647788070ac4c4c5bbc3ba290c8c', '42.107.220.167', 1543841712, '__ci_last_regenerate|i:1543841712;')
+ERROR - 2018-12-03 18:25:57 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('0ca7b87023dae0f2be91990e3634af6269abeb94', '66.249.79.167', 1543841714, '__ci_last_regenerate|i:1543841712;')
+ERROR - 2018-12-03 18:25:57 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('10e73d6c97ae1ceb1134523cfe8c4a6a') AS ci_session_lock
+ERROR - 2018-12-03 18:25:57 --> Query error: Lost connection to MySQL server during query - Invalid query: INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES ('3d5d2e2e52001b7a473b9746612c4ea51a7ec896', '122.173.100.120', 1543841712, '__ci_last_regenerate|i:1543841712;')
+ERROR - 2018-12-03 18:25:57 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('a99d251e624d0de8aaad8af285e48b50') AS ci_session_lock
+ERROR - 2018-12-03 18:25:57 --> Query error: MySQL server has gone away - Invalid query: SELECT RELEASE_LOCK('47ebb14e0bbcf50ff67eecdad6356559') AS ci_session_lock

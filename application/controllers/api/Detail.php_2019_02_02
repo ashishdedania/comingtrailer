@@ -1,0 +1,229 @@
+<?php
+
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+require(APPPATH . 'libraries/REST_Controller.php');
+
+class Detail extends REST_Controller {
+
+    function __construct() {
+        parent::__construct();
+        $printarray = array();
+        $err_code = CODE_INVALID_SERVICE;
+        $message = "";
+        $result = false;
+        $this->auth = new stdClass;
+        $this->load->helper('cookie');
+//        $this->load->model('api/common_model');
+    }
+
+    function video_post() {
+        $id = $this->input->post('id');
+        if (!isset($id) && empty($id)) {
+            $message = 'Invalid api call or parameter missing.';
+            $err_code = CODE_PARAM_MISSING;
+            $result = false;
+        } else {
+            $FrontData = array();
+            $is_exist = $this->My_model->getresult("SELECT * from video where id = " . $id . " limit 1 ");
+            if (count($is_exist) > 0) {
+                $FrontData['name'] = $is_exist[0]['video_name'];
+                $FrontData['value'] = $is_exist;
+                $FrontData['cast'] = $this->My_model->getresult("SELECT personality.id as id,personality.personality_name as name,"
+                        . "(case when personality.personality_img is not null then concat('" . base_url() . "','images/personality/',personality.personality_img) else null end) as thumb from "
+                        . "personality left join video_map_cast on video_map_cast.personality_id = personality.id "
+                        . "where personality.is_cast = 1 and video_map_cast.video_id = " . $is_exist[0]['id'] . "");
+
+                $FrontData['director'] = $this->My_model->getresult("SELECT personality.id as id,personality.personality_name as name,"
+                        . "(case when personality.personality_img is not null then concat('" . base_url() . "','images/personality/',personality.personality_img) else null end) as thumb from "
+                        . "personality left join video_map_director on video_map_director.personality_id = personality.id "
+                        . "where personality.is_director = 1 and video_map_director.video_id = " . $is_exist[0]['id'] . "");
+
+                $FrontData['singer'] = $this->My_model->getresult("SELECT personality.id as id,personality.personality_name as name,"
+                        . "(case when personality.personality_img is not null then concat('" . base_url() . "','images/personality/',personality.personality_img) else null end) as thumb from "
+                        . "personality left join video_map_singer on video_map_singer.personality_id = personality.id "
+                        . "where personality.is_singer = 1 and video_map_singer.video_id = " . $is_exist[0]['id'] . "");
+
+                $FrontData['music_director'] = $this->My_model->getresult("SELECT personality.id as id,personality.personality_name as name,"
+                        . "(case when personality.personality_img is not null then concat('" . base_url() . "','images/personality/',personality.personality_img) else null end) as thumb from "
+                        . "personality left join video_map_music on video_map_music.personality_id = personality.id "
+                        . "where personality.is_music_director = 1 and video_map_music.video_id = " . $is_exist[0]['id'] . "");
+
+                $FrontData['movie'] = $this->My_model->getresult("SELECT movie.id as id,movie.movie_name as name,"
+                        . "(case when movie.movie_img is not null then concat('" . base_url() . "','images/movies/',movie.movie_img) else null end) as thumb from "
+                        . "movie left join video_map_movie on video_map_movie.movie_id = movie.id "
+                        . "where video_map_movie.video_id = " . $is_exist[0]['id'] . "");
+                $FrontData['language'] = $this->My_model->getresult("SELECT subcat_name as name from sub_category where id = " . $is_exist[0]['subcat_id']);
+                $FrontData['channel'] = $this->My_model->getresult("SELECT released_by.id as id,released_by.rel_by_name as name,"
+                        . "(case when released_by.rel_by_img then concat('" . base_url() . "','images/channel/',released_by.rel_by_img) else null end) as thumb from "
+                        . "released_by left join video_map_relby on video_map_relby.rel_by_id = released_by.id "
+                        . "where video_map_relby.video_id = " . $is_exist[0]['id'] . "");
+                $printarray['data'] = $FrontData;
+                $message = '';
+                $err_code = CODE_OK;
+                $result = true;
+            } else {
+                $message = 'No data available';
+                $err_code = CODE_OK;
+                $result = true;
+            }
+        }
+        $printarray['result'] = $result;
+        $printarray['message'] = $message;
+        $printarray['errorCode'] = $err_code;
+        $this->response($printarray);
+    }
+
+    function personality_post() {
+        $id = $this->input->post('id');
+        $mstps = $this->input->post('type');
+        $page = $this->input->post('page');
+        if (!isset($id) && $id > 0) {
+            $message = 'Invalid api call or parameter missing.';
+            $err_code = CODE_PARAM_MISSING;
+            $result = false;
+        } else {
+            $resultData = $this->db->get_where('personality', array('id' => $id))->result_array();
+            if (!empty($resultData) && count($resultData) > 0) {
+                if ($mstps == 'song') {
+                    $mstp = 's';
+                } elseif ($mstps == 'trailer') {
+                    $mstp = 't';
+                } elseif ($mstps == 'poster') {
+                    $mstp = 'p';
+                } else {
+                    $mstp = 'm';
+                }
+                $map_arr = ['m' => 'movie', 's' => 'video', 't' => 'video', 'p' => 'poster'];
+                $label_map_arr = ['m' => 'Movie', 's' => 'Song', 't' => 'Trailer', 'p' => 'Poster'];
+
+                $is_set = 0;
+                foreach ($map_arr as $key => $val) {
+                    $cnt = 0;
+                    $data_arr = array();
+                    $res = $this->getMSTPdata($resultData[0]['id'], $key);
+                    $total[$label_map_arr[$key]] = 0;
+                    if (count($res) > 0) {
+                        foreach ($res as $res_value) {
+                            if (!in_array($res_value[$map_arr[$key] . '_name'], $data_arr)) {
+                                $cnt++;
+                                array_push($data_arr, $res_value[$map_arr[$key] . '_name']);
+                            }
+                        }
+                        $total[$label_map_arr[$key]] = $cnt;
+                    }
+                    if (count($res) > 0 && $is_set == 0) {
+                        if ($mstps == '') {
+                            $mstp = $key;
+                        }
+                        if ($key == $mstp) {
+                            $mstp_detail = $res;
+//                            $mstp = $key;
+//                            $mapped_table = $map_arr[$key];
+//                            $label = $label_map_arr[$key];
+                            $is_set = 1;
+                        }
+                    }
+                }
+                $individual_detail = $resultData[0];
+                $printarray['name'] = $resultData[0]['personality_name'];
+                $printarray['value'] = $individual_detail;
+                $printarray['total'] = $total;
+                $printarray['data_type'] = (isset($mstps) && $mstps != '') ? $mstps : "movie";
+                $printarray['data'] = $mstp_detail;
+            } else {
+                $printarray['data'] = array();
+                $message = 'No data available!';
+                $err_code = CODE_OK;
+                $result = TRUE;
+            }
+        }
+        $printarray['result'] = $result;
+        $printarray['message'] = $message;
+        $printarray['errorCode'] = $err_code;
+        $this->response($printarray);
+    }
+
+    function poster_post() {
+        $id = $this->input->post('id');
+        $type = $this->input->post('type');
+        if (!isset($id) && !is_numeric($id)) {
+            $message = 'Invalid api call or parameter missing.';
+            $err_code = CODE_PARAM_MISSING;
+            $result = false;
+        } else {
+            $is_exist = $this->My_model->getresult("SELECT poster.* FROM poster WHERE poster.id= " . $id . "");
+            if (count($is_exist) > 0) {
+                $typeId = (!empty($type)) ? $type : 1;
+                $printarray['data'] = $this->My_model->getresult("SELECT poster_img.* FROM poster_img WHERE poster_img.poster_id= " . $id . " and poster_img.poster_type = " . $typeId . " order by display_order asc ");
+                $message = '';
+                $err_code = CODE_OK;
+                $result = true;
+            } else {
+                $message = 'No data available!';
+                $err_code = CODE_OK;
+                $result = true;
+            }
+        }
+        $printarray['result'] = $result;
+        $printarray['message'] = $message;
+        $printarray['errorCode'] = $err_code;
+        $this->response($printarray);
+    }
+
+    function movie_post() {
+        
+    }
+
+    public function getMSTPdata($id, $mstp = 'm') {
+        $map_arr = ['m' => 'movie', 's' => 'video', 't' => 'video', 'p' => 'poster'];
+        $tables = ['cast', 'music', 'singer', 'director'];
+        $result = array();
+        foreach ($tables as $table) {
+            if ($mstp != 'p' || ($mstp == 'p' && !in_array($table, array('music', 'singer')))) {
+                $folder = '';
+                if ($map_arr[$mstp] == 'movie') {
+                    $folder = 'movies';
+                } elseif ($map_arr[$mstp] == 'video') {
+                    $folder = 'videothumb';
+                } elseif ($map_arr[$mstp] == 'poster') {
+                    $folder = 'poster';
+                }
+                $this->db->select('*');
+                $this->db->from($map_arr[$mstp] . '_map_' . $table . ' AS map'); // I use aliasing make joins easier
+                $this->db->join($map_arr[$mstp] . ' AS mapped', 'mapped.id = map.' . $map_arr[$mstp] . '_id', 'INNER');
+                $this->db->where(array('map.personality_id' => $id));
+                if ($mstp != 'm') {
+                    $this->db->where('mapped.is_deleted', 0);
+                }
+                if ($mstp == 't') { //--> Get Video Trailer
+                    $this->db->where('mapped.cat_id', 1);
+                } elseif ($mstp == 's') { //--> Get video Songs
+                    $this->db->where('mapped.cat_id', 2);
+                }
+
+                if ($this->input->post('search_year')) {
+                    $this->db->where("DATE_FORMAT(`mapped`.`rel_date`, '%Y')", $this->input->post('search_year'));
+                }
+
+                if ($this->input->post('search_month')) {
+                    $this->db->where("DATE_FORMAT(`mapped`.`rel_date`, '%c')", $this->input->post('search_month'));
+                }
+
+                if ($this->input->post('search_keyword')) {
+                    if ($this->input->post('search_keyword') == '0-9') {
+                        $this->db->where(array('`mapped`.`' . $map_arr[$mstp] . '_name` RLIKE ' => '^[0-9].*'));
+                    } else {
+                        $this->db->where('(`mapped`.`' . $map_arr[$mstp] . '_name` LIKE "' . $this->input->post('search_keyword') . '%" OR `mapped`.`' . $map_arr[$mstp] . '_name` LIKE "' . lcfirst($this->input->post('search_keyword')) . '%")');
+                    }
+                }
+                $this->db->order_by("mapped.rel_date", "desc");
+                $this->db->group_by("mapped.id");
+                $data = $this->db->get()->result_array();
+                $result = array_merge($result, $data);
+            }
+        }
+        return $result;
+    }
+
+}

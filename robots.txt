@@ -1,0 +1,8 @@
+User-agent: *
+
+Disallow: /MaruAdmin
+Disallow: /search
+Disallow: /Me
+Disallow: /images/user/
+Disallow: /new_site/
+Disallow: /backend/

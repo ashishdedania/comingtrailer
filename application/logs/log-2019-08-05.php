@@ -1,0 +1,54 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2019-08-05 09:51:06 --> 404 Page Not Found: Images/jaherat
+ERROR - 2019-08-05 09:51:06 --> 404 Page Not Found: Images/jaherat
+ERROR - 2019-08-05 09:51:06 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 09:51:20 --> 404 Page Not Found: Assets/css
+ERROR - 2019-08-05 09:51:23 --> 404 Page Not Found: backend/Assets/cities.json
+ERROR - 2019-08-05 09:51:23 --> 404 Page Not Found: backend/Assets/citynames.json
+ERROR - 2019-08-05 09:53:03 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 09:53:03 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 09:53:59 --> 404 Page Not Found: Faviconico/index
+ERROR - 2019-08-05 09:54:12 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 09:54:12 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:00:02 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:00:02 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:02:02 --> 404 Page Not Found: backend/Assets/citynames.json
+ERROR - 2019-08-05 10:02:02 --> 404 Page Not Found: backend/Assets/cities.json
+ERROR - 2019-08-05 10:02:07 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:02:07 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:13:19 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:13:20 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:15:09 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:15:09 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:16:47 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:16:47 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:19:20 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:19:20 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:25:41 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 10:25:43 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 10:27:47 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:27:47 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:28:14 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:28:14 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:28:23 --> 404 Page Not Found: backend/Assets/citynames.json
+ERROR - 2019-08-05 10:28:23 --> 404 Page Not Found: backend/Assets/cities.json
+ERROR - 2019-08-05 10:29:07 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 10:29:08 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 10:34:32 --> The upload path does not appear to be valid.
+ERROR - 2019-08-05 10:34:32 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 10:34:32 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:02:01 --> Severity: error --> Exception: syntax error, unexpected ''<pre>'' (T_CONSTANT_ENCAPSED_STRING) /var/www/html/ctw/application/controllers/backend/Poster.php 43
+ERROR - 2019-08-05 12:02:01 --> 404 Page Not Found: Faviconico/index
+ERROR - 2019-08-05 12:02:58 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:02:58 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:03:28 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 12:03:31 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 12:04:18 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 12:04:20 --> 404 Page Not Found: Images/no-image.svg
+ERROR - 2019-08-05 12:07:32 --> 404 Page Not Found: backend/Assets/cities.json
+ERROR - 2019-08-05 12:07:32 --> 404 Page Not Found: backend/Assets/citynames.json
+ERROR - 2019-08-05 12:07:35 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:07:35 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:08:06 --> 404 Page Not Found: backend/Poster/assets
+ERROR - 2019-08-05 12:08:06 --> 404 Page Not Found: backend/Poster/assets

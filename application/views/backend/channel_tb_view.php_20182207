@@ -1,0 +1,120 @@
+<ul class="language-nav-tabs">
+    <li><a href="#" id="all_tab" class="active">ALL</a></li>
+    <li><a href="#" id="delete_tab" class="">Delete</a></li>
+</ul>
+
+<div class="ctbody-content">
+    <?php
+    if(!empty($message)){
+        $msg=explode("_",$message);
+        echo '<div class="alert alert-'.$msg[0].'">
+'.$msg[1].'!
+</div>';
+    }
+    ?>
+    <div class="addcategory-total cf">
+        <p  class="total-number"><span id="total_number"></span> Channel</p>
+        <a href="<?php echo base_url()."backend/channel/add"; ?>" class="button icon-add">Add New Channel</a>
+    </div>
+
+    <?php include_once("common/search_view.php"); ?>
+
+    <div class="ctlists">
+        <table id="example" class="table table-bordered display" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Img</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <?php echo form_open(base_url( 'backend/channel/save_seo_data' ), array( 'method' => 'POST' ));?>
+    <input type="hidden" name="individual" value="<?php if(isset($seo_data) && !empty($seo_data)){ echo $seo_data['individual']; } ?>">
+    <?php include_once("common/seo_view.php"); ?>
+    <?php echo form_close();?>
+
+</div>
+
+
+
+
+<script type="text/javascript">
+
+
+    $(document).ready(function() {
+
+        var csrf = '<?php echo $this->security->get_csrf_hash(); ?>';
+        var data = {};
+        data['<?php echo $this->security->get_csrf_token_name(); ?>'] = csrf;
+
+        $.ajaxSetup({ 'data': data });
+
+        var table = $('#example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                "url": "<?php echo base_url('backend/channel/channel_list') ?>",
+                "dataType": "json",
+                "type": "POST",
+                "complete": function(response) {
+                    $("#total_number").html(response.responseJSON.recordsFiltered);
+                }
+            },
+            lengthMenu: [
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000],
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000]
+            ],
+            "columns": [
+
+                { "data": "number" },
+                { "data": "created" },
+                { "data": "img" },
+                { "data": "rel_by_name" },
+                { "data": "action" }
+            ],
+            "order": [[1, 'desc']]
+        } );
+
+
+
+        $('#search_button').on('click', function(e){
+            e.preventDefault();
+
+            var year=$("#year option:selected").val();
+            var month=$("#month option:selected").val();
+            var search_keyword=$("#search_keyword").val();
+            table.columns(0).search(year).columns(1).search(month).columns(2).search(search_keyword).draw();
+
+        });
+
+
+
+        $('#all_tab').on('click', function(e){
+            e.preventDefault();
+            var status='';
+            $("#delete_tab").removeClass("active");
+            $("#all_tab").addClass("active");
+            $(".seo-bar").show();
+            table.columns(3).search(status).draw();
+
+        });
+
+        $('#delete_tab').on('click', function(e){
+            e.preventDefault();
+            var status='1';
+            $("#all_tab").removeClass("active");
+            $("#delete_tab").addClass("active");
+            $(".seo-bar").hide();
+            table.columns(3).search(status).draw();
+        });
+
+
+    } );
+</script>
