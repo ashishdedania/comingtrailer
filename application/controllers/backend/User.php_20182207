@@ -1,0 +1,321 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class User extends MY_Controller
+{
+
+    public function  __construct()
+    {
+        parent::__construct();
+    }
+
+
+    public function index()
+    {
+        $total = $this->My_model->getresult("select count(id) as tot from user");
+        $totalsubs = $this->My_model->getresult("select count(newsletter.id) as tot from newsletter INNER JOIN user ON user.email=newsletter.email WHERE user.email!=''");
+        $this->data['total_subs']=$totalsubs[0]['tot'];
+        $this->data['total']=$total[0]['tot'];
+        $this->data['view_name'] = "user_tb_view.php";
+        $this->data['message'] = $this->session->flashdata('message');
+        $this->load->view('backend/layout', $this->data);
+    }
+
+    public function withdraw()
+    {
+        $this->data['view_name'] = "user_withdraw_tb_view.php";
+        $this->data['message'] = $this->session->flashdata('message');
+        $this->load->view('backend/layout', $this->data);
+    }
+
+    public function user_list()
+    {
+        $columns = array("user.id",'user.created','user.name',
+                        'user.mobile','user.email','user.gender',
+                        'user_points.earn_points','user.img',
+                        'user_points.earn_points','user_points.total_invite','user_points.total_social_likes',
+                        'user_points.total_video_play','user_points.total_share','user_points.totla_frnds_share',
+                        'user_points.total_likes','user_points.total_earn_rs','newsletter.id as subscriber'
+
+                    );
+        $order_columns = array("user.id",'user.created','user.name','user.mobile','user.email','user_points.earn_points','user.gender');
+
+        $limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $order_columns[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir'];
+
+        $year= $this->input->post('columns')[0]['search']['value'];
+        $month= $this->input->post('columns')[1]['search']['value'];
+        $search_keyword= $this->input->post('columns')[2]['search']['value'];
+        $newsletter= $this->input->post('columns')[3]['search']['value'];
+        $where2="";
+
+        if(!empty($year)){
+            $where2.=" AND YEAR(user.created) = ".$year;
+        }
+
+        if(!empty($month)){
+            $where2.=" AND MONTH(user.created) = ".$month;
+        }
+
+        if(!empty($newsletter) && $newsletter=="yes")
+        {
+            $where2.=" AND newsletter.email IS NOT NULL";
+        }
+        else if(!empty($newsletter) && $newsletter=="no")
+        {
+            $where2.=" AND newsletter.email IS NULL";
+        }
+
+        $totalData = $this->My_model->getresult("select count(user.id) as tot from user");
+        $totalFiltered = $totalData[0]['tot'];
+
+        if(empty($this->input->post('search')['value']) && empty($year) && empty($month) && empty($search_keyword) && empty($newsletter))
+        {
+            $posts = $this->My_model->getresult("
+
+               SELECT ".implode(',',$columns)." FROM user
+               LEFT JOIN user_points ON user.id=user_points.user_id
+               LEFT JOIN newsletter ON user.email=newsletter.email
+               ORDER BY $order $dir
+               LIMIT $start,$limit
+
+            ");
+        }
+        else {
+            $search = $this->input->post('search')['value'];
+
+            if(!empty($search_keyword)){
+                $search=$search_keyword;
+            }
+
+            $where="where 1 AND";
+            $where.=" ( ".implode(" LIKE '%".$search."%' OR ",$order_columns)." LIKE '%".$search."%' )";
+
+            $where.=$where2;
+
+            $posts = $this->My_model->getresult("
+
+               SELECT ".implode(',',$columns)." FROM user
+               LEFT JOIN user_points ON user.id=user_points.user_id
+               LEFT JOIN newsletter ON user.email=newsletter.email
+               $where
+               ORDER BY $order $dir
+               LIMIT $start,$limit
+
+            ");
+
+
+
+            $totalData = $this->My_model->getresult("select count(user.id) as tot from user
+            LEFT JOIN user_points ON user.id=user_points.user_id
+            LEFT JOIN newsletter ON user.email=newsletter.email
+             $where
+            ");
+            $totalFiltered = $totalData[0]['tot'];
+        }
+
+        $number=($start+1);
+        $data = array();
+        if(!empty($posts))
+        {
+            foreach ($posts as $post)
+            {
+
+
+
+                $action="<a href='".base_url()."backend/user/view?id=".$post['id']."' class='icon-view'></a>";
+                if(!empty($post['img'])){
+                    $img=$post['img'];
+                }else{
+                    $img=base_url().'assets/images/no-user.svg';
+                }
+                $name='<img id="videoimg" src="'.$img.'" alt="'.$post['name'].'" height="20" width="20"><br>';
+                $name.="<a href='".base_url()."backend/user/view?id=".$post['id']."'>".$post['name']."</a>";
+
+                if(!empty($post['subscriber']))
+                {
+                    $subscriber="YES";
+                }else{
+                    $subscriber="NO";
+                }
+
+                $nestedData["number"] = $number;
+                $nestedData["name"] = $name;
+                $nestedData["email"] = $post['email'];
+                $nestedData["gender"] = $post['gender'];
+                $nestedData["point"] = $post['earn_points'];
+                $nestedData["mobile"] = $post['mobile'];
+                $nestedData["total_social_likes"] = $post['total_social_likes'];
+                $nestedData["total_invite"] = $post['total_invite'];
+                $nestedData["total_video_play"] = $post['total_video_play'];
+                $nestedData["total_share"] = $post['total_share'];
+                $nestedData["totla_frnds_share"] = $post['totla_frnds_share'];
+                $nestedData["total_likes"] = $post['total_likes'];
+                $nestedData["total_earn_rs"] = $post['total_earn_rs'];
+                $nestedData["subscriber"] = $subscriber;
+                $nestedData["created"] = date("d M Y, h:i A",strtotime($post['created']));
+                $nestedData["action"] = $action;
+                $data[] = $nestedData;
+                $number++;
+            }
+        }
+
+
+        $output = array(
+            "draw"            => intval($this->input->post('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data,
+        );
+        $csrf_name = $this->security->get_csrf_token_name();
+        $csrf_hash = $this->security->get_csrf_hash();
+        $output[$csrf_name] = $csrf_hash;
+        //output to json format
+        echo json_encode($output);
+
+    }
+
+    public function user_withdraw_list()
+    {
+        $columns = array("user.id",'user.created','user.name',
+            'user.mobile','user.email','user.gender',
+            'user_points.earn_points','user.img',
+            'user_points.earn_points','user_points.total_invite','user_points.total_social_likes',
+            'user_points.total_video_play','user_points.total_share','user_points.totla_frnds_share',
+            'user_points.total_likes','user_points.total_earn_rs','newsletter.id as subscriber'
+
+        );
+        $order_columns = array("user.id",'user.created','user.name','user.mobile','user.email','user_points.earn_points','user.gender');
+
+        $limit = $this->input->post('length');
+        $start = $this->input->post('start');
+        $order = $order_columns[$this->input->post('order')[0]['column']];
+        $dir = $this->input->post('order')[0]['dir'];
+
+        $year= $this->input->post('columns')[0]['search']['value'];
+        $month= $this->input->post('columns')[1]['search']['value'];
+        $search_keyword= $this->input->post('columns')[2]['search']['value'];
+
+        $where2="";
+
+        if(!empty($year)){
+            $where2.=" AND YEAR(user.created) = ".$year;
+        }
+
+        if(!empty($month)){
+            $where2.=" AND MONTH(user.created) = ".$month;
+        }
+
+
+
+        $totalData = $this->My_model->getresult("select count(user.id) as tot from user");
+        $totalFiltered = $totalData[0]['tot'];
+
+        if(empty($this->input->post('search')['value']) && empty($year) && empty($month) && empty($search_keyword))
+        {
+            $posts = $this->My_model->getresult("
+
+               SELECT ".implode(',',$columns)." FROM user
+               LEFT JOIN user_points ON user.id=user_points.user_id
+               LEFT JOIN newsletter ON user.email=newsletter.email
+               LEFT JOIN bank_account ON bank_account.user_id=user.id
+               LEFT JOIN bank_account ON bank_account.user_id=user.id
+               ORDER BY $order $dir
+               LIMIT $start,$limit
+
+            ");
+        }
+        else {
+            $search = $this->input->post('search')['value'];
+
+            if(!empty($search_keyword)){
+                $search=$search_keyword;
+            }
+
+            $where="where 1 AND";
+            $where.=" ( ".implode(" LIKE '%".$search."%' OR ",$order_columns)." LIKE '%".$search."%' )";
+
+            $where.=$where2;
+
+            $posts = $this->My_model->getresult("
+
+               SELECT ".implode(',',$columns)." FROM user
+               LEFT JOIN user_points ON user.id=user_points.user_id
+               LEFT JOIN newsletter ON user.email=newsletter.email
+               $where
+               ORDER BY $order $dir
+               LIMIT $start,$limit
+
+            ");
+
+
+
+            $totalData = $this->My_model->getresult("select count(user.id) as tot from user
+            LEFT JOIN user_points ON user.id=user_points.user_id
+            LEFT JOIN newsletter ON user.email=newsletter.email
+             $where
+            ");
+            $totalFiltered = $totalData[0]['tot'];
+        }
+
+        $number=($start+1);
+        $data = array();
+        if(!empty($posts))
+        {
+            foreach ($posts as $post)
+            {
+
+
+
+                $action="<a href='".base_url()."backend/user/view?id=".$post['id']."' class='icon-view'></a>";
+                if(!empty($post['img'])){
+                    $img=$post['img'];
+                }else{
+                    $img=base_url().'assets/images/no-user.svg';
+                }
+                $name='<img id="videoimg" src="'.$img.'" alt="'.$post['name'].'" height="20" width="20"><br>';
+                $name.="<a href='".base_url()."backend/user/view?id=".$post['id']."'>".$post['name']."</a>";
+
+                if(!empty($post['subscriber']))
+                {
+                    $subscriber="YES";
+                }else{
+                    $subscriber="NO";
+                }
+
+                $nestedData["number"] = $number;
+                $nestedData["name"] = $name;
+                $nestedData["email"] = $post['email'];
+                $nestedData["gender"] = $post['gender'];
+                $nestedData["point"] = $post['earn_points'];
+                $nestedData["mobile"] = $post['mobile'];
+                $nestedData["total_social_likes"] = $post['total_social_likes'];
+                $nestedData["total_invite"] = $post['total_invite'];
+                $nestedData["total_video_play"] = $post['total_video_play'];
+                $nestedData["total_share"] = $post['total_share'];
+                $nestedData["totla_frnds_share"] = $post['totla_frnds_share'];
+                $nestedData["total_likes"] = $post['total_likes'];
+                $nestedData["total_earn_rs"] = $post['total_earn_rs'];
+                $nestedData["subscriber"] = $subscriber;
+                $nestedData["created"] = date("d M Y, h:i:s A",strtotime($post['created']));
+                $nestedData["action"] = $action;
+                $data[] = $nestedData;
+                $number++;
+            }
+        }
+
+
+        $output = array(
+            "draw"            => intval($this->input->post('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data,
+        );
+        $csrf_name = $this->security->get_csrf_token_name();
+        $csrf_hash = $this->security->get_csrf_hash();
+        $output[$csrf_name] = $csrf_hash;
+        //output to json format
+        echo json_encode($output);
+    }
+}

@@ -1,0 +1,128 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "comingtrailer";
+  src:url("comingtrailer.eot");
+  src:url("comingtrailer.eot?#iefix") format("embedded-opentype"),
+    url("comingtrailer.woff") format("woff"),
+    url("comingtrailer.ttf") format("truetype"),
+    url("comingtrailer.svg#about") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "comingtrailer" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "comingtrailer" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.icon-about-us:before {
+  content: "\61"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-advertise:before {
+  content: "\78"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-contact-us:before {
+  content: "\44"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-faq:before {
+  content: "\52"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-movie-poster:before {
+  content: "\4f"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-partnership:before {
+  content: "\4c"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-terms-privacy:before {
+  content: "\49"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-trailer:before {
+  content: "\48"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-video-song:before {
+  content: "\47"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-channel:before {
+  content: "\42"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-director:before {
+  content: "\45"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-movie:before {
+  content: "\50"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-music-director:before {
+  content: "\4e"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-adsense:before {
+  content: "\77"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-actors:before {
+  content: "\75"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-singers:before {
+  content: "\4a"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+.icon-all-user-info:before {
+  content: "\79"; font-size:25px; margin-right:30px; display: inline-block; vertical-align: middle;
+}
+
+.icon-playlist:before {
+  content: "\76"; font-size:17px; margin-right:15px; color:#478cca;
+}
+.icon-arrow-drop-down:before {
+  content: "\7a";
+}
+.icon-arrow-drop-up:before {
+  content: "\41";
+}
+.icon-previous:before {
+  content: "\4b"; font-size:13px;
+}
+.icon-next:before {
+  content: "\4d"; font-size:13px;
+}
+.icon-view:before {
+  content: "\54"; font-size:17px; margin-right:15px;
+}
+.icon-edit:before {
+  content: "\53"; font-size:17px; margin-right:15px;
+}
+.icon-close:before {
+  content: "\43";
+}
+.icon-move:before {
+  content: "\51";
+}
+.icon-delete:before {
+  content: "\46"; font-size:17px; margin-right:15px;
+}
+.icon-restore:before {
+  content: "\62"; font-size:17px; margin-right:15px;
+}
+.icon-trophy{width:17px; height:17px; background: url("torphy.svg"); display: inline-block;}
+.icon-trophy.active{background: url("torphyWin.svg");}

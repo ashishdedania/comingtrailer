@@ -1,0 +1,1 @@
+<?php echo "here"; echo phpinfo(); ?>

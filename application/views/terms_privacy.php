@@ -1,0 +1,1 @@
+<?php echo $content['terms_privacy_content']; ?>

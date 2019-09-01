@@ -1,0 +1,11 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2019-07-13 07:03:24 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: SELECT movie.full_movie from movie left join video_map_movie on video_map_movie.movie_id = movie.id where video_map_movie.video_id = 
+ERROR - 2019-07-13 07:04:49 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: SELECT movie.full_movie from movie left join video_map_movie on video_map_movie.movie_id = movie.id where video_map_movie.video_id = 
+ERROR - 2019-07-13 07:21:14 --> Severity: error --> Exception: Cannot use object of type stdClass as array /var/www/html/ctw/application/controllers/api/Detail.php 1309
+ERROR - 2019-07-13 07:21:28 --> Severity: error --> Exception: Cannot use object of type stdClass as array /var/www/html/ctw/application/controllers/api/Detail.php 1309
+ERROR - 2019-07-13 07:34:05 --> Severity: error --> Exception: syntax error, unexpected '}' /var/www/html/ctw/application/controllers/api/Detail.php 1333
+ERROR - 2019-07-13 07:34:51 --> Severity: error --> Exception: syntax error, unexpected '}' /var/www/html/ctw/application/controllers/api/Detail.php 1333
+ERROR - 2019-07-13 07:35:32 --> Severity: error --> Exception: syntax error, unexpected '}' /var/www/html/ctw/application/controllers/api/Detail.php 1333
+ERROR - 2019-07-13 08:30:40 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: SELECT movie.full_movie from movie left join video_map_movie on video_map_movie.movie_id = movie.id where video_map_movie.video_id = 
+ERROR - 2019-07-13 08:31:25 --> Query error: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1 - Invalid query: SELECT movie.full_movie from movie left join video_map_movie on video_map_movie.movie_id = movie.id where video_map_movie.video_id = 

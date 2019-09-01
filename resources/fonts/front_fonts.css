@@ -1,0 +1,97 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "ct";
+  src:url("ct.eot");
+  src:url("ct.eot?#iefix") format("embedded-opentype"),
+    url("ct.woff") format("woff"),
+    url("ct.ttf") format("truetype"),
+    url("ct.svg#untitled-font-3") format("svg");
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+[data-icon]:before {
+  font-family: "ct" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+  font-family: "ct" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-dailymotion:before {
+  content: "\62";
+}
+.icon-l-facebook:before {
+  content: "\65";
+}
+.icon-l-google:before {
+  content: "\66";
+}
+.icon-l-twitter:before {
+  content: "\67";
+}
+.icon-l-whatsapp:before {
+  content: "\68";
+}
+.icon-menu:before {
+  content: "\69";
+}
+.icon-pinterest:before {
+  content: "\6a";
+}
+.icon-twitter:before {
+  content: "\6b";
+}
+.icon-upload:before {
+  content: "\6c";
+}
+.icon-youtube:before {
+  content: "\6d";
+}
+.icon-facebook:before {
+  content: "\61";
+}
+.icon-google-plus:before {
+  content: "\63";
+}
+.icon-instagram:before {
+  content: "\64";
+}
+.icon-top-arrow:before {
+  content: "\6e";
+}
+.icon-m-menu:before {
+  content: "\6f";
+}
+.icon-like:before {
+  content: "\70";
+}
+.icon-liked:before {
+  content: "\71";
+}
+.icon-close:before {
+  content: "\72";
+}
+.icon-rs:before {
+  content: "\73";
+}

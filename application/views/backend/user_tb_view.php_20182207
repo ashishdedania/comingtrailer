@@ -1,0 +1,164 @@
+<ul class="language-nav-tabs">
+    <li><a href="#" class="active">ALL</a></li>
+    <li><a href="#" class="">Payout</a></li>
+    <li><a href="<?php echo base_url()."backend/user/withdraw"; ?>" class="">WITHDRAW REQUEST</a></li>
+</ul>
+
+<div class="ctbody-content">
+    <?php
+    if(!empty($message)){
+        $msg=explode("_",$message);
+        echo '<div class="alert alert-'.$msg[0].'">
+'.$msg[1].'!
+</div>';
+    }
+    ?>
+    <div class="addcategory-total cf">
+        <p class="total-number"><?php echo $total; ?> User <?php echo $total_subs; ?> Newsletter Subscribe</p>
+        <a href="<?php echo base_url()."backend/user/export_csv"; ?>" class="button icon-add">Export In Excel</a>
+    </div>
+
+    <?php include_once("common/search_view.php"); ?>
+
+    <div class="ctlists">
+        <table id="example" class="table table-bordered display" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Number</th>
+                <th>Email</th>
+                <th>Point</th>
+                <th>Gender</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+
+    </div>
+    <div class="page-bar cf">
+
+        <div class="show-rows">
+            <label>Newsletter Subscribe:</label>
+            <select  class="select" id="newsletter" name="newsletter">
+                <option value="">By</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    /* Formatting function for row details - modify as you need */
+    function format ( d ) {
+        // `d` is the original data object for the row
+        return '<table cellpadding="5" cellspacing="0" border="0" style="margin:0;">'+
+            '<tr>'+
+            '<td><strong>NEWSLETTER SUBSCRIBE : </strong>'+d.subscriber+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>SOCIAL MEDIA LIKES : </strong>'+d.total_social_likes+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>INVITE FRIENDS : </strong>'+d.total_invite+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>PLAY VIDEO : </strong>'+d.total_video_play+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>SHARE VIDEO & POSTER : </strong>'+d.total_share+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>LIKES : </strong>'+d.total_likes+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>FRIENDS SHARE : </strong>'+d.totla_frnds_share+'</td>'+
+            '</tr>'+
+            '<tr>'+
+            '<td><strong>EARN RS. : </strong>'+d.total_earn_rs+'</td>'+
+            '</tr>'+
+            '</table>';
+    }
+
+    $(document).ready(function() {
+
+        var csrf = '<?php echo $this->security->get_csrf_hash(); ?>';
+        var data = {};
+        data['<?php echo $this->security->get_csrf_token_name(); ?>'] = csrf;
+
+        $.ajaxSetup({ 'data': data });
+
+        var table = $('#example').DataTable( {
+            "processing": true,
+            "serverSide": true,
+            "ajax":{
+                "url": "<?php echo base_url('backend/user/user_list') ?>",
+                "dataType": "json",
+                "type": "POST"
+            },
+            lengthMenu: [
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000],
+                [ 10, 25, 50, 100, 250, 500, 1000, 2000, 3000, 4000, 5000]
+            ],
+            "columns": [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "defaultContent": ''
+                },
+
+
+                { "data": "created" },
+                { "data": "name" },
+                { "data": "mobile" },
+                { "data": "email" },
+                { "data": "point" },
+                { "data": "gender" },
+                { "data": "action" }
+            ],
+            "order": [[1, 'desc']]
+        } );
+
+
+
+        $('#search_button').on('click', function(e){
+            e.preventDefault();
+
+            var year=$("#year option:selected").val();
+            var month=$("#month option:selected").val();
+            var search_keyword=$("#search_keyword").val();
+            table.columns(0).search(year).columns(1).search(month).columns(2).search(search_keyword).draw();
+
+        });
+
+        $('#newsletter').on('change', function(e){
+            e.preventDefault();
+
+            var newsletter=$("#newsletter option:selected").val();
+            table.columns(3).search(newsletter).draw();
+        });
+
+        // Add event listener for opening and closing details
+        $('#example tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row( tr );
+
+            if ( row.child.isShown() ) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child( format(row.data()) ).show();
+                tr.addClass('shown');
+            }
+        } );
+    } );
+</script>
